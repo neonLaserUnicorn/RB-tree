@@ -22,7 +22,10 @@ struct Leaf
 		if (this != nullptr)
 		{
 			std::cout << this->data << ' ' << this << std::endl;
+			sf::sleep(sf::seconds(1));
+			std::cout << this->data << " left: ";
 			this->left->print();
+			std::cout << std::endl << this->data << " right: ";
 			this->right->print();
 		}
 	}
@@ -38,8 +41,10 @@ template<class T>
 Leaf<T>* rotateLeft(Leaf<T>* root);
 
 template<class T>
-void organize(Leaf<T>* root)
+Leaf<T>* organize(Leaf<T>* root)
 {
+	if (root == nullptr)
+		return nullptr;
 	Leaf<T>* parent = root->parent;
 	if (!(parent!=nullptr && parent->cl == BLACK))
 	{
@@ -60,14 +65,24 @@ void organize(Leaf<T>* root)
 					parent->cl = BLACK;
 					uncle->cl = BLACK;
 					grand->cl = RED;
-					organize(grand);
+					
 				}
 				else
 				{
 					if (parent == grand->left && root==parent->left)//LL-case
 					{ 
-						//grand = bigRotateRight(grand);
+						std::cout << "\norganizing...\n";
+						std::cout << grand->data << ' ' << grand->left->data << '\n';
+						parent->right = grand;
+						parent->parent = grand->parent;
+						grand->parent = parent;
+						grand->left = nullptr;
+						std::cout << grand->data << ' ' << grand->left << '\n';
+						//root->parent = parent;
+
+
 						//bigRotateRight();
+
 					}
 					if (parent == grand->left && root == parent->right)//LR-case
 					{ 
@@ -82,10 +97,14 @@ void organize(Leaf<T>* root)
 
 					}
 				}
+				//grand = organize(grand);
 			}
 		}
 	}
-	
+	//root->parent = organize(root->parent);
+	root->left = organize(root->left);
+	root->right = organize(root->right);
+	return root;
 }
 
 template<class T>
@@ -100,15 +119,18 @@ Leaf<T>* add(T n_data, Leaf<T>* root)
 		root->left = add(n_data, root->left);
 		if (root->left->parent == nullptr)
 			root->left->parent = root;
-		organize(root->left);
+		std::cout << "add: " << root->left->data << std::endl;
+		//organize(root->left);
 	}
 	else
 	{
 		root->right = add(n_data, root->right);
 		if (root->right->parent == nullptr)
 			root->right->parent = root;
-		organize(root->right);
+		std::cout << "add: " << root->right->data << std::endl;
+		//organize(root->right);
 	}
+	//root = organize(root);
 	return(root);
 }
 
@@ -171,12 +193,14 @@ template<class T>
 void BinaryTree<T>::push(T data)
 {
 	root = add(data, root);
+	root = organize(root);
 }
 
 template<class T>
 void BinaryTree<T>::print()
 {
 	root->print();
+	
 }
 
 template<class T>

@@ -69,7 +69,7 @@ int main()
 	//tree.push(30);
 	//tree.push(14);
 	tree.push(9);
-	tree.push(10);
+	//tree.push(10);
 
 	tree.print();
 	
