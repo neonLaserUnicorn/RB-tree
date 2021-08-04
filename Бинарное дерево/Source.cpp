@@ -19,7 +19,7 @@ void drawTree(Leaf<T>* leaf, sf::RenderWindow& window, sf::Vector2f pos = sf::Ve
 			cage.setFillColor(sf::Color::Red);
 		window.draw(cage);
 		sf::Font font;
-		font.loadFromFile("C:/Windows/Fonts/consola.ttf");
+		font.loadFromFile("consola.ttf");
 		sf::Text num;
 		num.setFont(font);
 		num.setFillColor(sf::Color::Blue);
@@ -63,13 +63,14 @@ int main()
 	BinaryTree<int> tree;
 	tree.push(17);
 	tree.push(11);
-	tree.push(13);
-	tree.push(22);
-	tree.push(21);
-	tree.push(30);
-	tree.push(14);
+	//tree.push(13);
+	//tree.push(22);
+	//tree.push(21);
+	//tree.push(30);
+	//tree.push(14);
 	tree.push(9);
 	tree.push(10);
+
 	tree.print();
 	
 
@@ -87,7 +88,7 @@ int main()
 		}
 
 		window.clear(sf::Color::White);
-		drawTree(tree.getRoot(), window);
+		drawTree(tree.root, window);
 		window.display();
 	}
 

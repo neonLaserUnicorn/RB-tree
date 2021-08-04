@@ -29,7 +29,10 @@ struct Leaf
 };
 
 template<class T>
-Leaf<T>* rotateRight(Leaf<T>* root);
+Leaf<T>* bigRotateRight(Leaf<T>* root);
+
+template<class T>
+void rotateRight(Leaf<T>* root);
 
 template<class T>
 Leaf<T>* rotateLeft(Leaf<T>* root);
@@ -57,24 +60,31 @@ void organize(Leaf<T>* root)
 					parent->cl = BLACK;
 					uncle->cl = BLACK;
 					grand->cl = RED;
-					std::cout << "\n****Changed****\n";
 					organize(grand);
 				}
-				else 
+				else
 				{
-					if (root == parent->right && parent == grand->left)
+					if (parent == grand->left && root==parent->left)//LL-case
+					{ 
+						//grand = bigRotateRight(grand);
+						//bigRotateRight();
+					}
+					if (parent == grand->left && root == parent->right)//LR-case
+					{ 
+
+					}
+					if (parent == grand->right && root == parent->right)//RR-case
 					{
-						
-						//parent = rotateLeft(root);
+
+					}
+					if (parent == grand->right && root == parent->left)//RL-case
+					{
+
 					}
 				}
 			}
 		}
 	}
-	/*if(root->left != nullptr)
-		organize(root->left);
-	if(root->right != nullptr)
-		organize(root->right);*/
 	
 }
 
@@ -126,13 +136,13 @@ class BinaryTree
 {
 private:
 
-	Leaf<T>* root;
 
 public:
+	Leaf<T>* root;
 	BinaryTree();
 	void push(T data);
 	void print();
-	Leaf<T>* getRoot();
+	Leaf<T>*& getRoot();
 	T getData();
 	Leaf<T>* operator[](T key)
 	{
@@ -176,7 +186,7 @@ T BinaryTree<T>::getData()
 }
 
 template<class T>
-Leaf<T>* BinaryTree<T>::getRoot()
+Leaf<T>*& BinaryTree<T>::getRoot()
 {
 	return root;
 }
@@ -202,7 +212,7 @@ Leaf<T>* rotateLeft(Leaf<T>* root)
 }
 
 template<class T>
-Leaf<T>* rotateRight(Leaf<T>* root)
+void rotateRight(Leaf<T>* root)
 {
 	Leaf<T>* x = root->left;
 	Leaf<T>* y = x->right;
@@ -211,5 +221,25 @@ Leaf<T>* rotateRight(Leaf<T>* root)
 	root->parent = x;
 	if (y != nullptr)
 		y->parent = root;
-	return x;
+	
+	//return x;
+}
+
+template<class T>
+Leaf<T>* bigRotateRight(Leaf<T>* root)
+{
+	Leaf<T>* new_root = root->left;
+	if (new_root->right != nullptr)
+	{
+		root->left = new_root->right;
+		new_root->right->parent = root;
+	}
+	else
+		root->left = nullptr;
+	new_root->right = root;
+	new_root->parent = root->parent;
+	//root->parent = new_root;
+
+	return new_root;
+	
 }
