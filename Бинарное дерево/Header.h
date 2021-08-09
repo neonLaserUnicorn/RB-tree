@@ -21,7 +21,7 @@ struct Leaf
 	{
 		if (this != nullptr)
 		{
-			std::cout << this->data << ' ' << this << std::endl;
+			std::cout << this->data << ' ' << this << "\t Parent: " << this->parent << std::endl;
 			sf::sleep(sf::seconds(1));
 			std::cout << this->data << " left: ";
 			this->left->print();
@@ -71,14 +71,16 @@ Leaf<T>* organize(Leaf<T>* root)
 				{
 					if (parent == grand->left && root==parent->left)//LL-case
 					{ 
-						std::cout << "\norganizing...\n";
-						std::cout << grand->data << ' ' << grand->left->data << '\n';
+
 						parent->right = grand;
 						parent->parent = grand->parent;
 						grand->parent = parent;
+						//g_left = new Leaf<T> (NULL);
+						//g_left = nullptr;
 						grand->left = nullptr;
-						std::cout << grand->data << ' ' << grand->left << '\n';
-						//root->parent = parent;
+						grand->cl = RED;
+						parent->cl = BLACK;
+//						std::cout << ' ' << g_left << '\n';						std::cout << grand->data << ' ' << grand->left << '\n';
 
 
 						//bigRotateRight();
@@ -101,7 +103,6 @@ Leaf<T>* organize(Leaf<T>* root)
 			}
 		}
 	}
-	//root->parent = organize(root->parent);
 	root->left = organize(root->left);
 	root->right = organize(root->right);
 	return root;
@@ -119,7 +120,7 @@ Leaf<T>* add(T n_data, Leaf<T>* root)
 		root->left = add(n_data, root->left);
 		if (root->left->parent == nullptr)
 			root->left->parent = root;
-		std::cout << "add: " << root->left->data << std::endl;
+		std::cout << "add: " << root->left->data << " in " << root->left << std::endl;
 		//organize(root->left);
 	}
 	else
@@ -130,7 +131,6 @@ Leaf<T>* add(T n_data, Leaf<T>* root)
 		std::cout << "add: " << root->right->data << std::endl;
 		//organize(root->right);
 	}
-	//root = organize(root);
 	return(root);
 }
 

@@ -68,6 +68,7 @@ int main()
 	//tree.push(21);
 	//tree.push(30);
 	//tree.push(14);
+
 	tree.push(9);
 	//tree.push(10);
 
