@@ -1,5 +1,7 @@
 #pragma once
 
+static int rec_count = 0;
+
 enum COLOR
 {
 	RED, 
@@ -68,8 +70,6 @@ void organize(Leaf<T>* root)
 					parent->cl = BLACK;
 					uncle->cl = BLACK;
 					grand->cl = RED;
-					organize(grand);
-					
 				}
 				else
 				{
@@ -91,14 +91,12 @@ void organize(Leaf<T>* root)
 						parent = rotateLeft(parent);
 						parent = bigRotateLeft(parent);
 					}
-					//organize(parent);
 				}
+				organize(grand);	
 			}
+			organize(parent);
 		}
 	}
-	//root->left = organize(root->left);
-	//root->right = organize(root->right);
-	//return root;
 }
 
 template<class T>
@@ -108,23 +106,6 @@ void add(T n_data, Leaf<T>*& root)
 	{
 		root = new Leaf<T>(n_data);
 	}
-	/*else if (n_data < root->data)
-	{
-		root->left = add(n_data, root->left);
-		if (root->left->parent == nullptr)
-			root->left->parent = root;
-		std::cout << "add: " << root->left->data << " in " << root->left << std::endl;
-		//organize(root->left);
-	}
-	else
-	{
-		root->right = add(n_data, root->right);
-		if (root->right->parent == nullptr)
-			root->right->parent = root;
-		std::cout << "add: " << root->right->data << std::endl;
-		//organize(root->right);
-	}
-	return(root)*/
 	else
 	{
 		Leaf<T>* cur = root;
@@ -146,6 +127,7 @@ void add(T n_data, Leaf<T>*& root)
 		cur->parent = prev;
 		organize(cur);
 	}
+	++rec_count;
 
 }
 
@@ -270,7 +252,10 @@ Leaf<T>* bigRotateRight(Leaf<T>* root)
 	new_root->right = old_root;
 	new_root->parent = old_root->parent;
 	if (new_root->parent != nullptr)
-		new_root->parent->left = new_root;
+	{
+		new_root->parent->right = new_root;
+		new_root->parent->cl = RED;
+	}
 	old_root->parent = new_root;
 	old_root->cl = RED;
 	new_root->cl = BLACK;
@@ -288,7 +273,7 @@ Leaf<T>* bigRotateLeft(Leaf<T>* root)
 	new_root->parent = old_root->parent;
 	if (new_root->parent != nullptr)
 	{
-		new_root->parent->right = new_root;
+		new_root->parent->left = new_root;
 		new_root->parent->cl = RED;
 	}
 	old_root->parent = new_root;
