@@ -61,18 +61,20 @@ void drawTree(Leaf<T>* leaf, sf::RenderWindow& window, sf::Vector2f pos = sf::Ve
 int main()
 {
 	BinaryTree<int> tree;
-	tree.push(17);
 	tree.push(11);
+	tree.push(17);
 	tree.push(13);
-	//tree.push(22);
-	//tree.push(21);
-	//tree.push(30);
-	//tree.push(14);
+	tree.push(22);
+	tree.push(21);
+	tree.push(30);
+	tree.push(14);
 
+	tree.push(10);
 	tree.push(9);
-	//tree.push(10);
+	tree.push(8);
+	tree.push(7);
 
-	tree.print();
+	//tree.print();
 	
 
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "BinaryTree");
@@ -95,3 +97,4 @@ int main()
 
 	return 0;
 }
+

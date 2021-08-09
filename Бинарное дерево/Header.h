@@ -35,7 +35,10 @@ template<class T>
 Leaf<T>* bigRotateRight(Leaf<T>* root);
 
 template<class T>
-void rotateRight(Leaf<T>* root);
+Leaf<T>* bigRotateLeft(Leaf<T>* root);
+
+template<class T>
+Leaf<T>* rotateRight(Leaf<T>* root);
 
 template<class T>
 Leaf<T>* rotateLeft(Leaf<T>* root);
@@ -65,41 +68,31 @@ void organize(Leaf<T>* root)
 					parent->cl = BLACK;
 					uncle->cl = BLACK;
 					grand->cl = RED;
+					organize(grand);
 					
 				}
 				else
 				{
 					if (parent == grand->left && root==parent->left)//LL-case
 					{ 
-
-						parent->right = grand;
-						parent->parent = grand->parent;
-						grand->parent = parent;
-						//g_left = new Leaf<T> (NULL);
-						//g_left = nullptr;
-						grand->left = nullptr;
-						grand->cl = RED;
-						parent->cl = BLACK;
-//						std::cout << ' ' << g_left << '\n';						std::cout << grand->data << ' ' << grand->left << '\n';
-
-
-						//bigRotateRight();
-
+						parent = bigRotateRight(parent);
 					}
 					if (parent == grand->left && root == parent->right)//LR-case
 					{ 
-
+						parent = rotateRight(parent);
+						parent = bigRotateRight(parent);
 					}
 					if (parent == grand->right && root == parent->right)//RR-case
 					{
-
+						parent = bigRotateLeft(parent);
 					}
 					if (parent == grand->right && root == parent->left)//RL-case
 					{
-
+						parent = rotateLeft(parent);
+						parent = bigRotateLeft(parent);
 					}
+					//organize(parent);
 				}
-				//grand = organize(grand);
 			}
 		}
 	}
@@ -202,7 +195,6 @@ public:
 		}
 		return cur;
 	}
-	//Leaf* 
 };
 
 template<class T>
@@ -241,52 +233,67 @@ Leaf<T>*& BinaryTree<T>::getRoot()
 template<class T>
 Leaf<T>* rotateLeft(Leaf<T>* root)
 {
-	std::cout << "\n root is " << root << ": " << root->data;
-	Leaf<T>* x = root->right;
-	std::cout << "\n x is " << x << ": ";
-	if (x != nullptr)
-		std::cout << x->data;
-	Leaf<T>* y = x->left;
-	std::cout << "\n y is " << y << ": ";
-	if (y != nullptr)
-		std::cout << y->data;
-	x->left = root;
-	root->right = y;
-	root->parent = x;
-	if (y != nullptr)
-		y->parent = root;
-	return x;
+	Leaf<T>* old_parent = root;
+	Leaf<T>* grand = root->parent;
+	Leaf<T>* new_parent = root->left;
+	new_parent->right = old_parent;
+	grand->right = new_parent;
+	new_parent->parent = grand;
+	old_parent->parent = new_parent;
+	old_parent->left = nullptr;
+
+	return new_parent;
 }
 
 template<class T>
-void rotateRight(Leaf<T>* root)
+Leaf<T>* rotateRight(Leaf<T>* root)
 {
-	Leaf<T>* x = root->left;
-	Leaf<T>* y = x->right;
-	x->right = root;
-	root->left = y;
-	root->parent = x;
-	if (y != nullptr)
-		y->parent = root;
+	Leaf<T>* old_parent = root;
+	Leaf<T>* grand = root->parent;
+	Leaf<T>* new_parent = root->right;
+	new_parent->left = old_parent;
+	grand->left = new_parent;
+	new_parent->parent = grand;
+	old_parent->parent = new_parent;
+	old_parent->right = nullptr;
+
+	return new_parent;
 	
-	//return x;
 }
 
 template<class T>
 Leaf<T>* bigRotateRight(Leaf<T>* root)
 {
-	Leaf<T>* new_root = root->left;
-	if (new_root->right != nullptr)
-	{
-		root->left = new_root->right;
-		new_root->right->parent = root;
-	}
-	else
-		root->left = nullptr;
-	new_root->right = root;
-	new_root->parent = root->parent;
-	//root->parent = new_root;
+	Leaf<T>* new_root = root;
+	Leaf<T>* old_root = root->parent;
+	old_root->left = new_root->right;
+	new_root->right = old_root;
+	new_root->parent = old_root->parent;
+	if (new_root->parent != nullptr)
+		new_root->parent->left = new_root;
+	old_root->parent = new_root;
+	old_root->cl = RED;
+	new_root->cl = BLACK;
 
 	return new_root;
-	
+}
+
+template<class T>
+Leaf<T>* bigRotateLeft(Leaf<T>* root)
+{
+	Leaf<T>* new_root = root;
+	Leaf<T>* old_root = root->parent;
+	old_root->right = new_root->left;
+	new_root->left = old_root;
+	new_root->parent = old_root->parent;
+	if (new_root->parent != nullptr)
+	{
+		new_root->parent->right = new_root;
+		new_root->parent->cl = RED;
+	}
+	old_root->parent = new_root;
+	old_root->cl = RED;
+	new_root->cl = BLACK;
+
+	return new_root;
 }
