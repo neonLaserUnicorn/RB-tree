@@ -63,7 +63,7 @@ int main()
 	BinaryTree<int> tree;
 	tree.push(17);
 	tree.push(11);
-	//tree.push(13);
+	tree.push(13);
 	//tree.push(22);
 	//tree.push(21);
 	//tree.push(30);

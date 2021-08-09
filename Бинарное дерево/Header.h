@@ -41,10 +41,10 @@ template<class T>
 Leaf<T>* rotateLeft(Leaf<T>* root);
 
 template<class T>
-Leaf<T>* organize(Leaf<T>* root)
+void organize(Leaf<T>* root)
 {
 	if (root == nullptr)
-		return nullptr;
+		return ;
 	Leaf<T>* parent = root->parent;
 	if (!(parent!=nullptr && parent->cl == BLACK))
 	{
@@ -103,19 +103,19 @@ Leaf<T>* organize(Leaf<T>* root)
 			}
 		}
 	}
-	root->left = organize(root->left);
-	root->right = organize(root->right);
-	return root;
+	//root->left = organize(root->left);
+	//root->right = organize(root->right);
+	//return root;
 }
 
 template<class T>
-Leaf<T>* add(T n_data, Leaf<T>* root)
+void add(T n_data, Leaf<T>*& root)
 {
 	if (root == nullptr)
 	{
 		root = new Leaf<T>(n_data);
 	}
-	else if (n_data < root->data)
+	/*else if (n_data < root->data)
 	{
 		root->left = add(n_data, root->left);
 		if (root->left->parent == nullptr)
@@ -131,7 +131,29 @@ Leaf<T>* add(T n_data, Leaf<T>* root)
 		std::cout << "add: " << root->right->data << std::endl;
 		//organize(root->right);
 	}
-	return(root);
+	return(root)*/
+	else
+	{
+		Leaf<T>* cur = root;
+		Leaf<T>* prev = cur;
+
+		while (cur != nullptr)
+		{
+			prev = cur;
+			if (n_data < cur->data)
+				cur = cur->left;
+			else
+				cur = cur->right;
+		}
+		cur = new Leaf<T>(n_data);
+		if (n_data < prev->data)
+			prev->left = cur;
+		else
+			prev->right = cur;
+		cur->parent = prev;
+		organize(cur);
+	}
+
 }
 
 template<class T>
@@ -192,8 +214,9 @@ BinaryTree<T>::BinaryTree()
 template<class T>
 void BinaryTree<T>::push(T data)
 {
-	root = add(data, root);
-	root = organize(root);
+	add(data, root);
+	while (root->parent != nullptr)
+		root = root->parent;
 }
 
 template<class T>
